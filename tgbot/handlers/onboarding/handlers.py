@@ -10,7 +10,7 @@ from tgbot import states
 import tgbot.handlers.onboarding.keyboards as keyboards
 
 from text_manager.models import texts, button_texts
-
+from codes.models import Code, UniqueCode
 from users.models import User
 
 
@@ -50,10 +50,89 @@ def start(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=texts.start,
+        text=texts.start.format(
+            code_text=f"Крайний полученный код: <code>{user.last_gotten_code}</code>\n\n" if user.last_gotten_code else ""
+        ),
+        reply_markup=keyboards.user_menu(user),
         parse_mode=ParseMode.HTML,
     )
 
     context.user_data.clear()
+
+    return ConversationHandler.END
+
+
+def handle_code(update: Update, context: CallbackContext):
+    user = User.get_user(update)
+
+    if user.last_gotten_code_time and (
+        (user.last_gotten_code_time + timedelta(days=7)).timestamp() > datetime.now().timestamp()
+    ):
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.new_code_too_early,
+            reply_markup=keyboards.user_menu(user),
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
+    code = Code.objects.filter(phrase=update.message.text).first()
+    if (not code) or (code and (not code.is_valid)):
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.code_not_found,
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
+    unique_code = UniqueCode.objects.filter(phrase_code=code, used=False).first()
+    if not unique_code:
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.unique_code_not_found,
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
+    unique_code.used = True
+    unique_code.save()
+
+    code.uses += 1
+    code.save()
+
+    user.last_gotten_code = unique_code.code
+    user.last_gotten_code_time = datetime.now()
+    user.save()
+
+    context.bot.send_message(
+        chat_id=update.effective_user.id,
+        text=texts.code_successfully_gotten.format(code=user.last_gotten_code),
+        reply_markup=keyboards.user_menu(user),
+        parse_mode=ParseMode.HTML,
+    )
+
+    return ConversationHandler.END
+
+
+def instructions(update: Update, context: CallbackContext):
+    user = User.get_user(update)
+
+    update.callback_query.edit_message_text(
+        text=texts.instructions.format(code=user.last_gotten_code),
+        reply_markup=keyboards.user_menu(user),
+        parse_mode=ParseMode.HTML,
+    )
+
+    return ConversationHandler.END
+
+
+def conditions(update: Update, context: CallbackContext):
+    user = User.get_user(update)
+
+    update.callback_query.edit_message_text(
+        text=texts.conditions.format(code=user.last_gotten_code),
+        reply_markup=keyboards.user_menu(user),
+        parse_mode=ParseMode.HTML,
+    )
 
     return ConversationHandler.END

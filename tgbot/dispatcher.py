@@ -32,12 +32,12 @@ def setup_dispatcher(dp: Dispatcher):
     persistence = PicklePersistence(filename="conversations")
     dp.persistence = persistence
 
-    fb = [
-        CommandHandler("start", onboarding_handlers.start, pass_user_data=True),
-    ]
+    dp.add_handler(CommandHandler("start", onboarding_handlers.start, pass_user_data=True))
 
-    for fallback in fb:
-        dp.add_handler(fallback)
+    dp.add_handler(MessageHandler(Filters.text, onboarding_handlers.handle_code, pass_user_data=True))
+
+    dp.add_handler(CallbackQueryHandler(onboarding_handlers.conditions, pattern=s("conditions")))
+    dp.add_handler(CallbackQueryHandler(onboarding_handlers.instructions, pattern=s("instructions")))
 
     # handling errors
     dp.add_error_handler(error.send_stacktrace_to_tg_chat)

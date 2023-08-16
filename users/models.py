@@ -27,7 +27,9 @@ class User(CreateUpdateTracker):
     is_blocked_bot = models.BooleanField(default=False)
 
     is_admin = models.BooleanField(default=False)
-    is_first_time = models.BooleanField(default=True)
+
+    last_gotten_code = models.CharField(max_length=32, null=True, blank=True)
+    last_gotten_code_time = models.DateTimeField(null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
 
