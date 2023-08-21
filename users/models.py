@@ -18,20 +18,24 @@ class AdminUserManager(Manager):
 
 class User(CreateUpdateTracker):
     id = models.AutoField(primary_key=True)
-    user_id = models.CharField(max_length=32, unique=True)  # telegram user_id
-    username = models.CharField(max_length=32, null=True, blank=True)
-    first_name = models.CharField(max_length=256)
-    last_name = models.CharField(max_length=256, null=True, blank=True)
-    language_code = models.CharField(max_length=8, null=True, blank=True, default="ru")
-    deep_link = models.CharField(max_length=64, null=True, blank=True)
-    is_blocked_bot = models.BooleanField(default=False)
+    user_id = models.CharField(max_length=32, unique=True, verbose_name="Телеграм ID")  # telegram user_id
+    username = models.CharField(max_length=32, null=True, blank=True, verbose_name="Телеграм Username")
+    first_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Имя")
+    last_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Фамилия")
+    language_code = models.CharField(max_length=8, null=True, blank=True, default="ru", verbose_name="Язык")
+    deep_link = models.CharField(max_length=64, null=True, blank=True, verbose_name="Deep Link")
+    is_blocked_bot = models.BooleanField(default=False, verbose_name="Заблокировал бота?")
 
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, verbose_name="Админ?")
 
-    last_gotten_code = models.CharField(max_length=32, null=True, blank=True)
-    last_gotten_code_time = models.DateTimeField(null=True, blank=True)
+    last_gotten_code = models.CharField(max_length=32, null=True, blank=True, verbose_name="Последний полученный код")
+    last_gotten_code_time = models.DateTimeField(null=True, blank=True, verbose_name="Время получения последнего кода")
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, verbose_name="Активен?")
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
         if self.username:

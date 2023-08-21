@@ -129,13 +129,19 @@ class Text(models.Model):
         unique=True,
         null=False,
         blank=False,
+        verbose_name="Название",
     )
 
     text = models.TextField(
         max_length=5000,
         null=False,
         blank=False,
+        verbose_name="Текст",
     )
+
+    class Meta:
+        verbose_name = "Текст"
+        verbose_name_plural = "Тексты"
 
 
 class ButtonText(models.Model):
@@ -148,10 +154,16 @@ class ButtonText(models.Model):
         unique=True,
         null=False,
         blank=False,
+        verbose_name="Название",
     )
 
     text = models.TextField(
         max_length=5000,
         null=False,
         blank=False,
+        verbose_name="Текст",
     )
+
+    class Meta:
+        verbose_name = "Текст кнопки"
+        verbose_name_plural = "Тексты кнопок"
