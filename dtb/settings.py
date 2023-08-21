@@ -70,6 +70,8 @@ INTERNAL_IPS = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = [config("URL", default="http://localhost:8000")]
+
 ROOT_URLCONF = "dtb.urls"
 
 TEMPLATES = [

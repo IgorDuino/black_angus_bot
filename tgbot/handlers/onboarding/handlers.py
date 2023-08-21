@@ -51,7 +51,9 @@ def start(update: Update, context: CallbackContext):
     context.bot.send_message(
         chat_id=update.effective_user.id,
         text=texts.start.format(
-            code_text=f"Крайний полученный код: <code>{user.last_gotten_code}</code>\n\n" if user.last_gotten_code else ""
+            code_text=f"Крайний полученный код: <code>{user.last_gotten_code}</code>\n\n"
+            if user.last_gotten_code
+            else ""
         ),
         reply_markup=keyboards.user_menu(user),
         parse_mode=ParseMode.HTML,
