@@ -24,6 +24,9 @@ def upload_unique_codes(modeladmin, request, queryset=None):
         return render(request, "admin/upload_excel.html", {"form": UploadExcelForm(), "selected_code": selected_code})
 
 
+upload_unique_codes.short_description = "Загрузить уникальные коды из Excel"
+
+
 def upload_unique_codes_view(request):
     excel_file = request.FILES["excel_file"]
     wb = openpyxl.load_workbook(excel_file)
