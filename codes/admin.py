@@ -46,6 +46,7 @@ def upload_unique_codes_view(request):
 @admin.register(Code)
 class CodeAdmin(admin.ModelAdmin):
     list_display = ("phrase", "is_active", "max_uses", "uses")
+    fields = list_display + ("instructions", "conditions")
     list_filter = ("is_active", "max_uses")
     search_fields = ("phrase",)
     actions = [upload_unique_codes]

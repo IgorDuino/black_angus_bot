@@ -19,16 +19,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="deep_link",
-            field=models.CharField(
-                blank=True, max_length=64, null=True, verbose_name="Deep Link"
-            ),
+            field=models.CharField(blank=True, max_length=64, null=True, verbose_name="Deep Link"),
         ),
         migrations.AlterField(
             model_name="user",
             name="first_name",
-            field=models.CharField(
-                blank=True, max_length=256, null=True, verbose_name="Имя"
-            ),
+            field=models.CharField(blank=True, max_length=256, null=True, verbose_name="Имя"),
         ),
         migrations.AlterField(
             model_name="user",
@@ -48,9 +44,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="language_code",
-            field=models.CharField(
-                blank=True, default="ru", max_length=8, null=True, verbose_name="Язык"
-            ),
+            field=models.CharField(blank=True, default="ru", max_length=8, null=True, verbose_name="Язык"),
         ),
         migrations.AlterField(
             model_name="user",
@@ -65,29 +59,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="last_gotten_code_time",
-            field=models.DateTimeField(
-                blank=True, null=True, verbose_name="Время получения последнего кода"
-            ),
+            field=models.DateTimeField(blank=True, null=True, verbose_name="Время получения последнего кода"),
         ),
         migrations.AlterField(
             model_name="user",
             name="last_name",
-            field=models.CharField(
-                blank=True, max_length=256, null=True, verbose_name="Фамилия"
-            ),
+            field=models.CharField(blank=True, max_length=256, null=True, verbose_name="Фамилия"),
         ),
         migrations.AlterField(
             model_name="user",
             name="user_id",
-            field=models.CharField(
-                max_length=32, unique=True, verbose_name="Телеграм ID"
-            ),
+            field=models.CharField(max_length=32, unique=True, verbose_name="Телеграм ID"),
         ),
         migrations.AlterField(
             model_name="user",
             name="username",
-            field=models.CharField(
-                blank=True, max_length=32, null=True, verbose_name="Телеграм Username"
-            ),
+            field=models.CharField(blank=True, max_length=32, null=True, verbose_name="Телеграм Username"),
         ),
     ]

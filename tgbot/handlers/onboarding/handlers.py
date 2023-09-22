@@ -67,12 +67,12 @@ def start(update: Update, context: CallbackContext):
 def handle_code(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    if user.last_gotten_code_time and (
-        (user.last_gotten_code_time + timedelta(days=7)).timestamp() > datetime.now().timestamp()
+    if user.last_gotten_code_phrase == update.message.text.strip() and (
+        (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
     ):
         context.bot.send_message(
             chat_id=update.effective_user.id,
-            text=texts.new_code_too_early,
+            text=texts.same_code_too_early,
             reply_markup=keyboards.user_menu(user),
             parse_mode=ParseMode.HTML,
         )
@@ -104,6 +104,7 @@ def handle_code(update: Update, context: CallbackContext):
 
     user.last_gotten_code = unique_code.code
     user.last_gotten_code_time = datetime.now()
+    user.last_gotten_code_phrase = code.phrase
     user.save()
 
     context.bot.send_message(
@@ -119,8 +120,10 @@ def handle_code(update: Update, context: CallbackContext):
 def instructions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
+    code = Code.objects.filter(phrase=user.last_gotten_code).first()
+
     update.callback_query.edit_message_text(
-        text=texts.instructions.format(code=user.last_gotten_code),
+        text=code.instructions.format(code=user.last_gotten_code),
         reply_markup=keyboards.user_menu(user),
         parse_mode=ParseMode.HTML,
     )
@@ -131,8 +134,10 @@ def instructions(update: Update, context: CallbackContext):
 def conditions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
+    code = Code.objects.filter(phrase=user.last_gotten_code).first()
+
     update.callback_query.edit_message_text(
-        text=texts.conditions.format(code=user.last_gotten_code),
+        text=code.conditions.format(code=user.last_gotten_code),
         reply_markup=keyboards.user_menu(user),
         parse_mode=ParseMode.HTML,
     )

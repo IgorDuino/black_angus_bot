@@ -28,6 +28,9 @@ class User(CreateUpdateTracker):
 
     is_admin = models.BooleanField(default=False, verbose_name="Админ?")
 
+    last_gotten_code_phrase = models.CharField(
+        max_length=32, null=True, blank=True, verbose_name="Последнее введенное кодовое слово"
+    )
     last_gotten_code = models.CharField(max_length=32, null=True, blank=True, verbose_name="Последний полученный код")
     last_gotten_code_time = models.DateTimeField(null=True, blank=True, verbose_name="Время получения последнего кода")
 

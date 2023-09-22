@@ -27,9 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="code",
             name="id",
-            field=models.AutoField(
-                primary_key=True, serialize=False, verbose_name="ID"
-            ),
+            field=models.AutoField(primary_key=True, serialize=False, verbose_name="ID"),
         ),
         migrations.AlterField(
             model_name="code",
@@ -39,9 +37,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="code",
             name="max_uses",
-            field=models.IntegerField(
-                default=0, verbose_name="Лимит использований (0 - без лимита)"
-            ),
+            field=models.IntegerField(default=0, verbose_name="Лимит использований (0 - без лимита)"),
         ),
         migrations.AlterField(
             model_name="code",
@@ -56,16 +52,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="uniquecode",
             name="code",
-            field=models.CharField(
-                max_length=255, unique=True, verbose_name="Уникальный код"
-            ),
+            field=models.CharField(max_length=255, unique=True, verbose_name="Уникальный код"),
         ),
         migrations.AlterField(
             model_name="uniquecode",
             name="id",
-            field=models.AutoField(
-                primary_key=True, serialize=False, verbose_name="ID"
-            ),
+            field=models.AutoField(primary_key=True, serialize=False, verbose_name="ID"),
         ),
         migrations.AlterField(
             model_name="uniquecode",
