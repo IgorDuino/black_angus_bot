@@ -67,7 +67,11 @@ def start(update: Update, context: CallbackContext):
 def handle_code(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    if user.last_gotten_code_phrase == update.message.text.strip() and (
+    last_gotten_code_phrase = UniqueCode.objects.filter(code=user.last_gotten_code).first()
+    if last_gotten_code_phrase:
+        last_gotten_code_phrase = last_gotten_code_phrase.phrase_code.phrase
+
+    if last_gotten_code_phrase == update.message.text.strip() and (
         (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
     ):
         context.bot.send_message(
@@ -104,7 +108,6 @@ def handle_code(update: Update, context: CallbackContext):
 
     user.last_gotten_code = unique_code.code
     user.last_gotten_code_time = datetime.now()
-    user.last_gotten_code_phrase = code.phrase
     user.save()
 
     context.bot.send_message(
@@ -120,7 +123,7 @@ def handle_code(update: Update, context: CallbackContext):
 def instructions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    code = Code.objects.filter(phrase=user.last_gotten_code).first()
+    code = UniqueCode.objects.filter(code=user.last_gotten_code).first().phrase_code
 
     update.callback_query.edit_message_text(
         text=code.instructions.format(code=user.last_gotten_code),
@@ -134,7 +137,7 @@ def instructions(update: Update, context: CallbackContext):
 def conditions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    code = Code.objects.filter(phrase=user.last_gotten_code).first()
+    code = UniqueCode.objects.filter(code=user.last_gotten_code).first().phrase_code
 
     update.callback_query.edit_message_text(
         text=code.conditions.format(code=user.last_gotten_code),
