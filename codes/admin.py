@@ -17,11 +17,17 @@ class UploadExcelForm(forms.Form):
 def upload_unique_codes(modeladmin, request, queryset=None):
     if not (queryset is None):
         if len(queryset) != 1:
-            modeladmin.message_user(request, "Please select only one Code for importing!", level=messages.ERROR)
+            modeladmin.message_user(
+                request, "Please select only one Code for importing!", level=messages.ERROR
+            )
             return
 
         selected_code = queryset[0]
-        return render(request, "admin/upload_excel.html", {"form": UploadExcelForm(), "selected_code": selected_code})
+        return render(
+            request,
+            "admin/upload_excel.html",
+            {"form": UploadExcelForm(), "selected_code": selected_code},
+        )
 
 
 upload_unique_codes.short_description = "Загрузить уникальные коды из Excel"

@@ -44,7 +44,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="language_code",
-            field=models.CharField(blank=True, default="ru", max_length=8, null=True, verbose_name="Язык"),
+            field=models.CharField(
+                blank=True, default="ru", max_length=8, null=True, verbose_name="Язык"
+            ),
         ),
         migrations.AlterField(
             model_name="user",
@@ -59,7 +61,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="last_gotten_code_time",
-            field=models.DateTimeField(blank=True, null=True, verbose_name="Время получения последнего кода"),
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="Время получения последнего кода"
+            ),
         ),
         migrations.AlterField(
             model_name="user",
@@ -74,6 +78,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="user",
             name="username",
-            field=models.CharField(blank=True, max_length=32, null=True, verbose_name="Телеграм Username"),
+            field=models.CharField(
+                blank=True, max_length=32, null=True, verbose_name="Телеграм Username"
+            ),
         ),
     ]

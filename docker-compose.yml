@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 # TODO: add Django superuser creation
 services:
   db:

@@ -37,7 +37,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="code",
             name="max_uses",
-            field=models.IntegerField(default=0, verbose_name="Лимит использований (0 - без лимита)"),
+            field=models.IntegerField(
+                default=0, verbose_name="Лимит использований (0 - без лимита)"
+            ),
         ),
         migrations.AlterField(
             model_name="code",

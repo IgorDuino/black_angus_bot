@@ -18,18 +18,28 @@ class AdminUserManager(Manager):
 
 class User(CreateUpdateTracker):
     id = models.AutoField(primary_key=True)
-    user_id = models.CharField(max_length=32, unique=True, verbose_name="Телеграм ID")  # telegram user_id
-    username = models.CharField(max_length=32, null=True, blank=True, verbose_name="Телеграм Username")
+    user_id = models.CharField(
+        max_length=32, unique=True, verbose_name="Телеграм ID"
+    )  # telegram user_id
+    username = models.CharField(
+        max_length=32, null=True, blank=True, verbose_name="Телеграм Username"
+    )
     first_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Имя")
     last_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Фамилия")
-    language_code = models.CharField(max_length=8, null=True, blank=True, default="ru", verbose_name="Язык")
+    language_code = models.CharField(
+        max_length=8, null=True, blank=True, default="ru", verbose_name="Язык"
+    )
     deep_link = models.CharField(max_length=64, null=True, blank=True, verbose_name="Deep Link")
     is_blocked_bot = models.BooleanField(default=False, verbose_name="Заблокировал бота?")
 
     is_admin = models.BooleanField(default=False, verbose_name="Админ?")
 
-    last_gotten_code = models.CharField(max_length=32, null=True, blank=True, verbose_name="Последний полученный код")
-    last_gotten_code_time = models.DateTimeField(null=True, blank=True, verbose_name="Время получения последнего кода")
+    last_gotten_code = models.CharField(
+        max_length=32, null=True, blank=True, verbose_name="Последний полученный код"
+    )
+    last_gotten_code_time = models.DateTimeField(
+        null=True, blank=True, verbose_name="Время получения последнего кода"
+    )
 
     is_active = models.BooleanField(default=True, verbose_name="Активен?")
 

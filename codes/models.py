@@ -9,10 +9,16 @@ class Code(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="ID")
     phrase = models.CharField(max_length=255, verbose_name="Кодовое слово")
     is_active = models.BooleanField(default=True, verbose_name="Активен?")
-    max_uses = models.IntegerField(default=0, verbose_name="Лимит использований (0 - без лимита)")  # 0 means unlimited
+    max_uses = models.IntegerField(
+        default=0, verbose_name="Лимит использований (0 - без лимита)"
+    )  # 0 means unlimited
     uses = models.IntegerField(default=0, verbose_name="Использовано раз")
-    instructions = models.TextField(max_length=10000, verbose_name="Инструкции", default=default_instructions)
-    conditions = models.TextField(max_length=10000, verbose_name="Условия", default=default_conditions)
+    instructions = models.TextField(
+        max_length=10000, verbose_name="Инструкции", default=default_instructions
+    )
+    conditions = models.TextField(
+        max_length=10000, verbose_name="Условия", default=default_conditions
+    )
 
     def __str__(self):
         return self.phrase

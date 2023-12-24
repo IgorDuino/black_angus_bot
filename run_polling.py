@@ -1,8 +1,7 @@
 import os
 import django
-from telegram import Bot, ParseMode
-from telegram.ext import Updater, PicklePersistence
-import datetime
+from telegram import Bot
+from telegram.ext import Updater
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dtb.settings")
@@ -13,8 +12,6 @@ from dtb.settings import (
     TELEGRAM_TOKEN,
 )
 from tgbot.dispatcher import setup_dispatcher
-
-from tgbot.handlers.onboarding import handlers as onboarding_handlers
 
 
 def run_polling(tg_token: str = TELEGRAM_TOKEN):
@@ -30,10 +27,8 @@ def run_polling(tg_token: str = TELEGRAM_TOKEN):
     bot = updater.bot
     bot.send_message(
         chat_id=TELEGRAM_LOGS_CHAT_ID,
-        text=f"Bot started",
+        text="Bot started",
     )
-
-    jq = updater.job_queue
 
     updater.start_polling()
     updater.idle()

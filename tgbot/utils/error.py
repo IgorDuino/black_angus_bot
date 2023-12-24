@@ -16,7 +16,10 @@ def send_stacktrace_to_tg_chat(update: Update, context: CallbackContext) -> None
     if isinstance(context.error, telegram.error.Unauthorized):
         return
 
-    if isinstance(context.error, telegram.error.BadRequest) and context.error.message == "Chat not found":
+    if (
+        isinstance(context.error, telegram.error.BadRequest)
+        and context.error.message == "Chat not found"
+    ):
         return
 
     logging.error("Exception while handling an update:", exc_info=context.error)
@@ -24,7 +27,9 @@ def send_stacktrace_to_tg_chat(update: Update, context: CallbackContext) -> None
     tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
     tb_string = "".join(tb_list)
 
-    message = f"An exception was raised while handling an update\n" f"```{html.escape(tb_string)}```"
+    message = (
+        f"An exception was raised while handling an update\n" f"```{html.escape(tb_string)}```"
+    )
 
     if update:
         context.bot.send_message(

@@ -39,7 +39,9 @@ def start(update: Update, context: CallbackContext):
         created = True
 
     if created:
-        start_code = update.message.text.split(" ")[1] if len(update.message.text.split(" ")) > 1 else None
+        start_code = (
+            update.message.text.split(" ")[1] if len(update.message.text.split(" ")) > 1 else None
+        )
         if start_code:
             referrer = User.objects.filter(user_id=start_code).first()
             if referrer:

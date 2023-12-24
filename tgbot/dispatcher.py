@@ -4,7 +4,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     MessageHandler,
     Filters,
-    ConversationHandler,
     PicklePersistence,
 )
 
@@ -13,12 +12,7 @@ from dtb.settings import DEBUG
 from tgbot.main import bot
 from tgbot.utils import error
 
-from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
-
-from tgbot import states
-
-from text_manager.models import button_texts
 
 
 def s(pattern) -> callable:
@@ -34,16 +28,21 @@ def setup_dispatcher(dp: Dispatcher):
 
     dp.add_handler(CommandHandler("start", onboarding_handlers.start, pass_user_data=True))
 
-    dp.add_handler(MessageHandler(Filters.text, onboarding_handlers.handle_code, pass_user_data=True))
+    dp.add_handler(
+        MessageHandler(Filters.text, onboarding_handlers.handle_code, pass_user_data=True)
+    )
 
     dp.add_handler(CallbackQueryHandler(onboarding_handlers.conditions, pattern=s("conditions")))
-    dp.add_handler(CallbackQueryHandler(onboarding_handlers.instructions, pattern=s("instructions")))
+    dp.add_handler(
+        CallbackQueryHandler(onboarding_handlers.instructions, pattern=s("instructions"))
+    )
 
-    # handling errors
     dp.add_error_handler(error.send_stacktrace_to_tg_chat)
 
     return dp
 
 
-n_workers = 0 if DEBUG else 4
-dispatcher = setup_dispatcher(Dispatcher(bot, update_queue=None, workers=n_workers, use_context=True))
+WORKERS_N = 0 if DEBUG else 4
+dispatcher = setup_dispatcher(
+    Dispatcher(bot, update_queue=None, workers=WORKERS_N, use_context=True)
+)

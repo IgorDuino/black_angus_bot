@@ -1,10 +1,12 @@
-{% extends "admin/base.html" %}
-{% block content %}
+{% extends "admin/base.html" %} {% block content %}
 <h1>Загрузка кодов для слова "{{selected_code.phrase}}"</h1>
-<form method="post" enctype="multipart/form-data" action="{% url 'admin:import_to_unique_codes' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="code_id" value="{{ selected_code.id }}">
-    <button type="submit">Upload</button>
+<form
+  method="post"
+  enctype="multipart/form-data"
+  action="{% url 'admin:import_to_unique_codes' %}"
+>
+  {% csrf_token %} {{ form.as_p }}
+  <input type="hidden" name="code_id" value="{{ selected_code.id }}" />
+  <button type="submit">Upload</button>
 </form>
 {% endblock %}
