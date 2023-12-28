@@ -125,7 +125,17 @@ def handle_code(update: Update, context: CallbackContext):
 def instructions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    code = UniqueCode.objects.filter(code=user.last_gotten_code).first().phrase_code
+    code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
+
+    if not code:
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.start,
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
+    code = code.phrase_code
 
     update.callback_query.edit_message_text(
         text=code.instructions.format(code=user.last_gotten_code),
@@ -139,7 +149,17 @@ def instructions(update: Update, context: CallbackContext):
 def conditions(update: Update, context: CallbackContext):
     user = User.get_user(update)
 
-    code = UniqueCode.objects.filter(code=user.last_gotten_code).first().phrase_code
+    code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
+
+    if not code:
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.start,
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
+    code = code.phrase_code
 
     update.callback_query.edit_message_text(
         text=code.conditions.format(code=user.last_gotten_code),
@@ -270,7 +290,10 @@ def check_resolve(update: Update, context: CallbackContext):
     code.used = True
     code.save()
 
-    text = texts.check_resolve_success.format(code=code.code)
+    if gift_type == 1:
+        text = texts.check_resolve_success_1.format(code=code.code)
+    else:
+        text = texts.check_resolve_success_2.format(code=code.code)
 
     try:
         context.bot.send_message(
