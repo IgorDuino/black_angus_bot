@@ -8,6 +8,9 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    ports:
+      - 15432:5432
+      
   redis:
     image: redis:alpine
 

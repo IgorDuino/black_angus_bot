@@ -41,3 +41,46 @@ class UniqueCode(models.Model):
     class Meta:
         verbose_name = "Уникальный код"
         verbose_name_plural = "Уникальные коды"
+
+
+class UniqueGiftCode(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    code = models.CharField(max_length=255, unique=True, verbose_name="Уникальный код")
+    gift_type = models.SmallIntegerField()
+    used = models.BooleanField(default=False, verbose_name="Использован?")
+
+    class Meta:
+        verbose_name = "Уникальный код подарка"
+        verbose_name_plural = "Уникальные коды подарков"
+
+
+class CheckRequest(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="ID")
+    message_id = models.CharField(
+        max_length=255, verbose_name="ID сообщения", null=True, blank=True
+    )
+    fileid = models.CharField(max_length=255, verbose_name="ID файла", unique=True)
+    file_unique_id = models.CharField(
+        max_length=255, verbose_name="Уникальный Telegram ID файла", unique=True
+    )
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE, verbose_name="Клиент")
+    accepted = models.BooleanField(default=False, verbose_name="Принят?", blank=True, null=True)
+    gift_type = models.CharField(max_length=255, verbose_name="Тип подарка", blank=True, null=True)
+    processed = models.BooleanField(default=False, verbose_name="Обработан?", blank=True, null=True)
+    processed_by = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="Обработал",
+        related_name="processed_by",
+        blank=True,
+        null=True,
+    )
+    processed_at = models.DateTimeField(
+        auto_now_add=True, verbose_name="Обработан в", blank=True, null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан в")
+
+    class Meta:
+        verbose_name = "Запрос на проверку чека"
+        verbose_name_plural = "Запросы на проверку чека"
+        ordering = ("-created_at",)

@@ -1,35 +1,19 @@
-import logging
 import os
-import sys
-import random
-import string
+
 from decouple import config
 
 import dj_database_url
-
-from pathlib import Path
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Load env variables from file
-dotenv_file = BASE_DIR / ".env"
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
-def generate_secret():
-    default_secret_key_alphabet_list = list((string.ascii_letters + string.digits) * 2)
-    random.shuffle(default_secret_key_alphabet_list)
-    return "".join(default_secret_key_alphabet_list)[:64]
 
 
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
+LOGIN_URL = "/admin/"
+
 ALLOWED_HOSTS = [
     "*",
-]  # since Telegram uses a lot of IPs for webhooks
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -38,10 +22,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # 3rd party apps
     "django_celery_beat",
     "debug_toolbar",
-    # local apps
     "users.apps.UsersConfig",
     "text_manager.apps.TextManagerConfig",
     "codes",
@@ -62,9 +44,7 @@ MIDDLEWARE = [
 
 
 INTERNAL_IPS = [
-    # ...
     "127.0.0.1",
-    # ...
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -93,15 +73,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "dtb.wsgi.application"
 ASGI_APPLICATION = "dtb.asgi.application"
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     "default": dj_database_url.config(conn_max_age=600, default="sqlite:///db.sqlite3"),
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,17 +92,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"  # TODO: set from env, use in datetime.now
+TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -150,5 +120,6 @@ CELERY_TASK_DEFAULT_QUEUE = "default"
 TELEGRAM_TOKEN = config("TELEGRAM_TOKEN")
 BOT_LINK = config("BOT_LINK")
 ROOT_ADMIN_ID = config("ROOT_ADMIN_ID")
-TELEGRAM_LOGS_CHAT_ID = config("TELEGRAM_LOGS_CHAT_ID", default=None)
+TELEGRAM_LOGS_CHAT_ID = config("TELEGRAM_LOGS_CHAT_ID", cast=int)
+TELEGRAM_CHECK_CHAT_ID = config("TELEGRAM_CHECK_CHAT_ID", cast=int)
 DISABLE_FOR_NEW_USERS = config("DISABLE_FOR_NEW_USERS", cast=bool, default=False)

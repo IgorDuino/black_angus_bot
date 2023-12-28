@@ -27,3 +27,23 @@ def user_menu(user: User):
     ]
 
     return InlineKeyboardMarkup([buttons])
+
+
+def check_image(id):
+    buttons = [
+        [
+            InlineKeyboardButton(
+                "Принять на первый приз", callback_data=t(f"check_resolve:accept:1:{id}")
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                "Принять на второй приз", callback_data=t(f"check_resolve:accept:2:{id}")
+            ),
+        ],
+        [
+            InlineKeyboardButton("Отклонить", callback_data=t(f"check_resolve:decline:{id}")),
+        ],
+    ]
+
+    return InlineKeyboardMarkup(buttons)

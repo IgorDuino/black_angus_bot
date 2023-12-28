@@ -1,17 +1,13 @@
 from django.contrib import admin
-import openpyxl
-from django.http import HttpResponse
 from django.shortcuts import render
-from django import forms
 from django.urls import path
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from .models import Code, UniqueCode
+from .forms import UploadExcelForm
+from .models import Code, UniqueCode, CheckRequest, UniqueGiftCode
 
-
-class UploadExcelForm(forms.Form):
-    excel_file = forms.FileField()
+import openpyxl
 
 
 def upload_unique_codes(modeladmin, request, queryset=None):
@@ -74,3 +70,17 @@ class UniqueCodeAdmin(admin.ModelAdmin):
     list_display = ("code", "phrase_code", "used")
     list_filter = ("used",)
     search_fields = ("code", "phrase_code__phrase")
+
+
+@admin.register(UniqueGiftCode)
+class UniqueGiftCodeAdmin(admin.ModelAdmin):
+    list_display = ("code", "gift_type", "used")
+    list_filter = ("used",)
+    search_fields = ("code",)
+
+
+@admin.register(CheckRequest)
+class CheckRequestAdmin(admin.ModelAdmin):
+    list_display = ("fileid", "file_unique_id", "user", "accepted", "gift_type", "processed")
+    list_filter = ("accepted", "processed")
+    search_fields = ("fileid", "file_unique_id", "user__user_id")
