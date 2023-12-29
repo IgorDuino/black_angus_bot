@@ -75,13 +75,17 @@ class User(CreateUpdateTracker):
         return self.user_id
 
     @classmethod
-    def get_or_create(cls, update: Update) -> Tuple[User, bool]:
+    def get_or_create(cls, update, context):
         data = extract_user_data_from_update(update)
-        user, created = User.objects.get_or_create(user_id=data["user_id"])
-        if created:
-            user.username = data["username"]
-            user.first_name = data["first_name"]
-            user.last_name = data["last_name"]
-            user.language_code = data["language_code"]
-            user.save()
-        return user, created
+        u, created = cls.objects.update_or_create(user_id=data["user_id"], defaults=data)
+
+        if (
+            created
+            and context is not None
+            and context.args
+            and str(context.args[0]).strip() != str(u.user_id).strip()
+        ):
+            u.deep_link = context.args[0]
+            u.asave()
+
+        return u, created

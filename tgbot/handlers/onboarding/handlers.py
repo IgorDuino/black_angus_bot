@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(update: Update, context: CallbackContext):
-    user, created = User.get_or_create(update)
+    user, created = User.get_or_create(update, context)
 
     if created:
         start_code = (
@@ -49,7 +49,7 @@ def start(update: Update, context: CallbackContext):
 
 
 def handle_code(update: Update, context: CallbackContext):
-    user, _ = User.get_or_create(update)
+    user, _ = User.get_or_create(update, context)
 
     last_gotten_code_phrase = UniqueCode.objects.filter(code=user.last_gotten_code).first()
     if last_gotten_code_phrase:
@@ -105,7 +105,7 @@ def handle_code(update: Update, context: CallbackContext):
 
 
 def instructions(update: Update, context: CallbackContext):
-    user, _ = User.get_or_create(update)
+    user, _ = User.get_or_create(update, context)
 
     code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
 
@@ -153,7 +153,7 @@ def conditions(update: Update, context: CallbackContext):
 
 
 def handle_image(update: Update, context: CallbackContext):
-    user, _ = User.get_or_create(update)
+    user, _ = User.get_or_create(update, context)
 
     if UniqueGiftCode.objects.filter(used=False).count() == 0:
         context.bot.send_message(
