@@ -75,7 +75,7 @@ class User(CreateUpdateTracker):
         return self.user_id
 
     @classmethod
-    def get_or_create(update: Update) -> Tuple[User, bool]:
+    def get_or_create(cls, update: Update) -> Tuple[User, bool]:
         data = extract_user_data_from_update(update)
         user, created = User.objects.get_or_create(user_id=data["user_id"])
         if created:
