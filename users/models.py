@@ -73,3 +73,15 @@ class User(CreateUpdateTracker):
         if self.username:
             return self.username
         return self.user_id
+
+    @classmethod
+    def get_or_create(update: Update) -> Tuple[User, bool]:
+        data = extract_user_data_from_update(update)
+        user, created = User.objects.get_or_create(user_id=data["user_id"])
+        if created:
+            user.username = data["username"]
+            user.first_name = data["first_name"]
+            user.last_name = data["last_name"]
+            user.language_code = data["language_code"]
+            user.save()
+        return user, created

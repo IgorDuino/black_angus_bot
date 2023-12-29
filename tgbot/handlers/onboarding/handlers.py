@@ -18,25 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(update: Update, context: CallbackContext):
-    user = User.get_user(update)
-    if user:
-        created = False
-    else:
-        if settings.DISABLE_FOR_NEW_USERS:
-            context.bot.send_message(
-                chat_id=update.effective_user.id,
-                text=texts.disabled_for_new_users,
-                parse_mode=ParseMode.HTML,
-            )
-            return
-        user = User(
-            user_id=update.effective_user.id,
-            username=update.effective_user.username,
-            first_name=update.effective_user.first_name,
-            last_name=update.effective_user.last_name,
-        )
-        user.save()
-        created = True
+    user, created = User.get_or_create(update)
 
     if created:
         start_code = (
@@ -67,7 +49,7 @@ def start(update: Update, context: CallbackContext):
 
 
 def handle_code(update: Update, context: CallbackContext):
-    user = User.get_user(update)
+    user, _ = User.get_or_create(update)
 
     last_gotten_code_phrase = UniqueCode.objects.filter(code=user.last_gotten_code).first()
     if last_gotten_code_phrase:
@@ -123,7 +105,7 @@ def handle_code(update: Update, context: CallbackContext):
 
 
 def instructions(update: Update, context: CallbackContext):
-    user = User.get_user(update)
+    user, _ = User.get_or_create(update)
 
     code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
 
@@ -171,7 +153,7 @@ def conditions(update: Update, context: CallbackContext):
 
 
 def handle_image(update: Update, context: CallbackContext):
-    user = User.get_user(update)
+    user, _ = User.get_or_create(update)
 
     if UniqueGiftCode.objects.filter(used=False).count() == 0:
         context.bot.send_message(
