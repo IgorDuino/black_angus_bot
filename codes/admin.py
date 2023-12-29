@@ -21,7 +21,7 @@ def upload_unique_codes(modeladmin, request, queryset=None):
         selected_code = queryset[0]
         return render(
             request,
-            "admin/upload_excel.html",
+            "admin/upload_codes_excel.html",
             {"form": UploadExcelForm(), "selected_code": selected_code},
         )
 
