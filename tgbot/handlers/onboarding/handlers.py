@@ -129,7 +129,7 @@ def instructions(update: Update, context: CallbackContext):
 
 
 def conditions(update: Update, context: CallbackContext):
-    user = User.get_user(update)
+    user, _ = User.get_or_create(update, context)
 
     code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
 
