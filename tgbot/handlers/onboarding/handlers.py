@@ -66,7 +66,7 @@ def handle_code(update: Update, context: CallbackContext):
         )
         return ConversationHandler.END
 
-    code = Code.objects.filter(phrase=update.message.text).first()
+    code = Code.objects.filter(phrase__iexact=update.message.text).first()
     if (not code) or (code and (not code.is_valid)):
         context.bot.send_message(
             chat_id=update.effective_user.id,
