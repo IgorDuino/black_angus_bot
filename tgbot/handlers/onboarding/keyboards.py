@@ -16,10 +16,10 @@ def t(text: str) -> str:
 def channels():
     buttons = [
         [
-            InlineKeyboardButton("Гамбринус", url="https://t.me/+9kZJyWq9K85lNTYy"),
+            InlineKeyboardButton("Гамбринус", url="https://t.me/gambrinus2023"),
         ],
         [
-            InlineKeyboardButton("Блэкангус", url="https://t.me/+eB3esgXPN-c1M2Iy"),
+            InlineKeyboardButton("Black Angus", url="https://t.me/blackangusrest"),
         ],
         [
             InlineKeyboardButton("Я подписался", callback_data=t("check_subscribed")),

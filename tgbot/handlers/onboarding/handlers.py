@@ -320,6 +320,7 @@ def check_subscribed(update: Update, context: CallbackContext):
     for channel_id in settings.CHANNELS_IDS:
         chat_member: ChatMember = context.bot.get_chat_member(channel_id, user.user_id)
         if not (chat_member.status in ["creator", "administrator", "member"]):
+            context.bot.answer_callback_query(update.callback_query.id, "Не удалось подтвердить наличие подписки на наши каналы", show_alert=True)
             update.callback_query.edit_message_text(
                 text=texts.not_subscribed,
                 reply_markup=keyboards.channels(),
