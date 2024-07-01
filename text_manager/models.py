@@ -81,11 +81,12 @@ class Texts(metaclass=MetaClass):
     check_resolve_success_2 = (
         "Ваш чек успешно прошел модерацию, вот ваш уникальный приз типа 2: {code}"
     )
+    not_subscribed = "Для получения скидки Вы должны подписаться на наши каналы Гамбринус и Блэкангус"
+    got_subscription = "Супер! Вижу, что Вы подписались на наши каналы, теперь введите кодовое слово"
 
 
 text_choices = [attr for attr in dir(Texts) if not attr.startswith("__")]
 button_text_choices = [attr for attr in dir(ButtonTexts) if not attr.startswith("__")]
-
 
 texts = Texts()
 button_texts = ButtonTexts()

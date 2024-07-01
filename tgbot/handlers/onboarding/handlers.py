@@ -3,7 +3,7 @@ import logging
 
 from dtb import settings
 
-from telegram import ParseMode, Update
+from telegram import ParseMode, Update, ChatMember
 from telegram.ext import CallbackContext, ConversationHandler
 import tgbot.handlers.onboarding.keyboards as keyboards
 
@@ -12,7 +12,6 @@ from codes.models import Code, UniqueCode, CheckRequest, UniqueGiftCode
 from users.models import User
 
 from django.db.models import Q
-
 
 logger = logging.getLogger(__name__)
 
@@ -51,12 +50,21 @@ def start(update: Update, context: CallbackContext):
 def handle_code(update: Update, context: CallbackContext):
     user, _ = User.get_or_create(update, context)
 
+    if not user.is_subscribed:
+        context.bot.send_message(
+            chat_id=update.effective_user.id,
+            text=texts.not_subscribed,
+            reply_markup=keyboards.channels(),
+            parse_mode=ParseMode.HTML,
+        )
+        return ConversationHandler.END
+
     last_gotten_code_phrase = UniqueCode.objects.filter(code=user.last_gotten_code).first()
     if last_gotten_code_phrase:
         last_gotten_code_phrase = last_gotten_code_phrase.phrase_code.phrase
 
     if last_gotten_code_phrase == update.message.text.strip() and (
-        (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
+            (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
     ):
         context.bot.send_message(
             chat_id=update.effective_user.id,
@@ -222,7 +230,7 @@ def check_resolve(update: Update, context: CallbackContext):
 
         update.callback_query.edit_message_caption(
             caption=f"Запрос #{request_id} отклонен модератором {user.tg_str} в "
-            f"{check_request.processed_at.strftime('%d.%m.%Y %H:%M')}",
+                    f"{check_request.processed_at.strftime('%d.%m.%Y %H:%M')}",
         )
 
         try:
@@ -252,7 +260,7 @@ def check_resolve(update: Update, context: CallbackContext):
 
     update.callback_query.edit_message_caption(
         caption=f"Запрос #{request_id} принят модератором {user.tg_str} в "
-        f"{check_request.processed_at.strftime('%d.%m.%Y %H:%M')}",
+                f"{check_request.processed_at.strftime('%d.%m.%Y %H:%M')}",
     )
     code = UniqueGiftCode.objects.filter(gift_type=gift_type, used=False).first()
     if not code:
@@ -292,4 +300,24 @@ def check_resolve(update: Update, context: CallbackContext):
         except Exception as e:
             pass
 
+    return ConversationHandler.END
+
+
+def check_subscribed(update: Update, context: CallbackContext):
+    user, _ = User.get_or_create(update, context)
+    for channel_id in settings.CHANNELS_IDS:
+        chat_member: ChatMember = context.bot.get_chat_member(channel_id, user.user_id)
+        if not (chat_member.status in ["creator", "administrator", "member"]):
+            update.callback_query.edit_message_text(
+                text=texts.not_subscribed,
+                reply_markup=keyboards.channels(),
+                parse_mode=ParseMode.HTML,
+            )
+            return ConversationHandler.END
+
+    update.callback_query.edit_message_text(
+        text=texts.got_subscription,
+    )
+    user.is_subscribed = True
+    user.save()
     return ConversationHandler.END

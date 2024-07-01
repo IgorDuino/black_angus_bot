@@ -1,20 +1,32 @@
-from typing import List
 import time
 
 from telegram import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
 )
 
-from users.models import User
-
 from text_manager.models import button_texts
+from users.models import User
 
 
 def t(text: str) -> str:
     return f"{text}:{time.time()}"
+
+
+def channels():
+    buttons = [
+        [
+            InlineKeyboardButton("Гамбринус", url="https://t.me/+9kZJyWq9K85lNTYy"),
+        ],
+        [
+            InlineKeyboardButton("Блэкангус", url="https://t.me/+eB3esgXPN-c1M2Iy"),
+        ],
+        [
+            InlineKeyboardButton("Я подписался", callback_data=t("check_subscribed")),
+        ]
+    ]
+
+    return InlineKeyboardMarkup(buttons)
 
 
 def user_menu(user: User):

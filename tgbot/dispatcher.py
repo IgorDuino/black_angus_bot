@@ -47,6 +47,11 @@ def setup_dispatcher(dp: Dispatcher):
             onboarding_handlers.check_resolve, pattern=s("check_resolve"), pass_user_data=True
         )
     )
+    dp.add_handler(
+        CallbackQueryHandler(
+            onboarding_handlers.check_subscribed, pattern=s("check_subscribed"), pass_user_data=True
+        )
+    )
 
     dp.add_error_handler(error.send_stacktrace_to_tg_chat)
 

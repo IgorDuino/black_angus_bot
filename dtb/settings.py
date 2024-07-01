@@ -92,6 +92,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CHANNELS_IDS = config("CHANNELS_IDS", cast=lambda v: [int(i) for i in v.split(",")])
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Europe/Moscow"

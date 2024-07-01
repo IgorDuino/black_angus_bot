@@ -24,6 +24,7 @@ class User(CreateUpdateTracker):
     username = models.CharField(
         max_length=32, null=True, blank=True, verbose_name="Телеграм Username"
     )
+    is_subscribed = models.BooleanField(default=False, verbose_name="Подписан на каналы?")
     first_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Имя")
     last_name = models.CharField(max_length=256, null=True, blank=True, verbose_name="Фамилия")
     language_code = models.CharField(
