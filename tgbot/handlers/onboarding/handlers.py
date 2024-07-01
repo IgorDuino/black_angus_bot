@@ -49,8 +49,20 @@ def start(update: Update, context: CallbackContext):
 
 def handle_code(update: Update, context: CallbackContext):
     user, _ = User.get_or_create(update, context)
+    if update.message:
+        phrase = update.message.text.strip()
+    else:
+        phrase = context.user_data.get("phrase")
+        if not phrase:
+            context.bot.send_message(
+                chat_id=update.effective_user.id,
+                text=texts.user_error_message,
+                parse_mode=ParseMode.HTML,
+            )
+            return ConversationHandler.END
 
     if not user.is_subscribed:
+        context.user_data["phrase"] = phrase
         context.bot.send_message(
             chat_id=update.effective_user.id,
             text=texts.not_subscribed,
@@ -59,22 +71,22 @@ def handle_code(update: Update, context: CallbackContext):
         )
         return ConversationHandler.END
 
-    last_gotten_code_phrase = UniqueCode.objects.filter(code=user.last_gotten_code).first()
-    if last_gotten_code_phrase:
-        last_gotten_code_phrase = last_gotten_code_phrase.phrase_code.phrase
+    last_gotten_unique_code = UniqueCode.objects.filter(code=user.last_gotten_code).first()
+    if last_gotten_unique_code:
+        last_gotten_code_phrase = last_gotten_unique_code.phrase_code.phrase
 
-    if last_gotten_code_phrase == update.message.text.strip() and (
-            (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
-    ):
-        context.bot.send_message(
-            chat_id=update.effective_user.id,
-            text=texts.same_code_too_early,
-            reply_markup=keyboards.user_menu(user),
-            parse_mode=ParseMode.HTML,
-        )
-        return ConversationHandler.END
+        if last_gotten_code_phrase.lower() == phrase.lower() and (
+                (user.last_gotten_code_time + timedelta(days=3)).timestamp() > datetime.now().timestamp()
+        ):
+            context.bot.send_message(
+                chat_id=update.effective_user.id,
+                text=texts.same_code_too_early,
+                reply_markup=keyboards.user_menu(user),
+                parse_mode=ParseMode.HTML,
+            )
+            return ConversationHandler.END
 
-    code = Code.objects.filter(phrase__iexact=update.message.text).first()
+    code = Code.objects.filter(phrase__iexact=phrase).first()
     if (not code) or (code and (not code.is_valid)):
         context.bot.send_message(
             chat_id=update.effective_user.id,
@@ -315,9 +327,8 @@ def check_subscribed(update: Update, context: CallbackContext):
             )
             return ConversationHandler.END
 
-    update.callback_query.edit_message_text(
-        text=texts.got_subscription,
-    )
+
     user.is_subscribed = True
     user.save()
-    return ConversationHandler.END
+    update.message.delete()
+    return handle_code(update, context)

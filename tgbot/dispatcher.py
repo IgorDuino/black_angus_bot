@@ -4,7 +4,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     MessageHandler,
     Filters,
-    PicklePersistence,
 )
 
 from dtb.settings import DEBUG
