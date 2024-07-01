@@ -1,17 +1,15 @@
-from datetime import datetime, timedelta
 import logging
-
-from dtb import settings
-
-from telegram import ParseMode, Update, ChatMember
-from telegram.ext import CallbackContext, ConversationHandler
-import tgbot.handlers.onboarding.keyboards as keyboards
-
-from text_manager.models import texts
-from codes.models import Code, UniqueCode, CheckRequest, UniqueGiftCode
-from users.models import User
+from datetime import datetime, timedelta
 
 from django.db.models import Q
+from telegram import ParseMode, Update, ChatMember
+from telegram.ext import CallbackContext, ConversationHandler
+
+import tgbot.handlers.onboarding.keyboards as keyboards
+from codes.models import Code, UniqueCode, CheckRequest, UniqueGiftCode
+from dtb import settings
+from text_manager.models import texts
+from users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -320,7 +318,8 @@ def check_subscribed(update: Update, context: CallbackContext):
     for channel_id in settings.CHANNELS_IDS:
         chat_member: ChatMember = context.bot.get_chat_member(channel_id, user.user_id)
         if not (chat_member.status in ["creator", "administrator", "member"]):
-            context.bot.answer_callback_query(update.callback_query.id, "Не удалось подтвердить наличие подписки на наши каналы", show_alert=True)
+            context.bot.answer_callback_query(update.callback_query.id,
+                                              "Не удалось подтвердить наличие подписки на наши каналы", show_alert=True)
             update.callback_query.edit_message_text(
                 text=texts.not_subscribed,
                 reply_markup=keyboards.channels(),
@@ -328,8 +327,8 @@ def check_subscribed(update: Update, context: CallbackContext):
             )
             return ConversationHandler.END
 
-
     user.is_subscribed = True
     user.save()
-    update.message.delete()
+    context.bot.delete_message(chat_id=update.effective_chat.id, message_id=update.callback_query.message.message_id)
+
     return handle_code(update, context)
